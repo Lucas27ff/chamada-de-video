@@ -146,42 +146,11 @@
       display: none;
       text-align: center;
     }
-    @media (max-width: 480px) {
-      .self-video {
-        width: 85px;
-        height: 130px;
-        bottom: 55px;
-        right: 15px;
-        border-width: 2px;
-      }
-      .user-info img {
-        width: 40px;
-        height: 40px;
-      }
-      .user-name {
-        font-size: 15px;
-      }
-      .call-time {
-        font-size: 12px;
-      }
-      .call-secure {
-        font-size: 11px;
-      }
-      .end-call {
-        width: 60px;
-        height: 60px;
-        bottom: 70px;
-      }
-      .end-call svg {
-        width: 24px;
-        height: 24px;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="video-container" id="videoContainer">
-    <video id="mainVideo" class="full-video" autoplay playsinline muted>
+    <video id="mainVideo" class="full-video" playsinline muted>
       <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
       Seu navegador não suporta vídeo.
     </video>
@@ -232,26 +201,20 @@
     const endCallAudio = document.getElementById('endCallAudio');
     const callEndedMessage = document.getElementById('callEndedMessage');
     const alreadyCalledMessage = document.getElementById('alreadyCalledMessage');
-    const videoContainer = document.getElementById('videoContainer');
 
     let seconds = 0;
     let callInterval;
     let callEnded = false;
 
-    function updateCallTime() {
-      seconds++;
-      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const s = String(seconds % 60).padStart(2, '0');
-      callTimeElem.textContent = `${m}:${s}`;
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        videoUser.srcObject = stream;
+      } catch (err) {
+        alert('Erro ao acessar a câmera: ' + err.message);
+      }
     }
 
-    function endCall() {
-      if (callEnded) return;
-      callEnded = true;
-
-      mainVideo.pause();
-      callAudio.pause();
-      mainVideo.loop = false;
-
-      if (videoUser.srcObject) {
-        videoUser.srcObject.getTracks().
+    function updateCallTime() {
+      seconds++;
+      const m = String(Math.floor(seconds / 60)).padStart
