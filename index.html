@@ -131,7 +131,7 @@
       user-select: none;
       pointer-events: none;
     }
-    #callEndedMessage {
+    #callEndedMessage, #alreadyCalledMessage {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -144,6 +144,7 @@
       border-radius: 10px;
       z-index: 20;
       display: none;
+      text-align: center;
     }
     @media (max-width: 480px) {
       .self-video {
@@ -179,7 +180,7 @@
   </style>
 </head>
 <body>
-  <div class="video-container">
+  <div class="video-container" id="videoContainer">
     <video id="mainVideo" class="full-video" autoplay playsinline muted>
       <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
       Seu navegador não suporta vídeo.
@@ -220,6 +221,7 @@
     </button>
 
     <div id="callEndedMessage">Chamada encerrada</div>
+    <div id="alreadyCalledMessage">Você já fez a chamada e não pode fazer novamente.</div>
   </div>
 
   <script>
@@ -229,19 +231,12 @@
     const mainVideo = document.getElementById('mainVideo');
     const endCallAudio = document.getElementById('endCallAudio');
     const callEndedMessage = document.getElementById('callEndedMessage');
+    const alreadyCalledMessage = document.getElementById('alreadyCalledMessage');
+    const videoContainer = document.getElementById('videoContainer');
 
     let seconds = 0;
     let callInterval;
     let callEnded = false;
-
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        videoUser.srcObject = stream;
-      } catch (err) {
-        alert('Erro ao acessar a câmera: ' + err.message);
-      }
-    }
 
     function updateCallTime() {
       seconds++;
@@ -251,54 +246,12 @@
     }
 
     function endCall() {
-      if (callEnded) return; // evita múltiplas chamadas
+      if (callEnded) return;
       callEnded = true;
 
-      // Pausar vídeo e áudio da chamada
       mainVideo.pause();
       callAudio.pause();
-
-      // Remover loop do vídeo para garantir que não repita
       mainVideo.loop = false;
 
-      // Parar câmera do usuário
       if (videoUser.srcObject) {
-        videoUser.srcObject.getTracks().forEach(track => track.stop());
-      }
-
-      // Mostrar mensagem de encerramento
-      callEndedMessage.style.display = 'block';
-
-      // Parar timer
-      clearInterval(callInterval);
-
-      // Tocar som de encerramento
-      endCallAudio.play();
-    }
-
-    function endCallManually() {
-      endCall();
-      alert('Chamada encerrada');
-    }
-
-    mainVideo.onplay = () => {
-      if (!callEnded) {
-        callAudio.play().catch(() => {});
-      }
-    };
-
-    mainVideo.onpause = () => {
-      callAudio.pause();
-    };
-
-    // Detecta fim do vídeo para encerrar a chamada automaticamente
-    mainVideo.onended = () => {
-      endCall();
-    };
-
-    callInterval = setInterval(updateCallTime, 1000);
-
-    startCamera();
-  </script>
-</body>
-</html>
+        videoUser.srcObject.getTracks().
