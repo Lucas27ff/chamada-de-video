@@ -107,7 +107,7 @@
       bottom: 110px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: #d32f2f;
+      background-color: #c62828;
       border: none;
       border-radius: 50%;
       width: 75px;
@@ -129,6 +129,34 @@
       fill: white;
       user-select: none;
       pointer-events: none;
+    }
+    /* Tela de chamada encerrada estilo WhatsApp */
+    .call-ended-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      color: white;
+      font-size: 24px;
+      font-weight: 600;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      user-select: none;
+      flex-direction: column;
+    }
+    .call-ended-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .call-ended-overlay svg {
+      width: 48px;
+      height: 48px;
+      fill: white;
+      margin-bottom: 12px;
     }
     @media (max-width: 480px) {
       .self-video {
@@ -160,12 +188,19 @@
         width: 24px;
         height: 24px;
       }
+      .call-ended-overlay {
+        font-size: 18px;
+      }
+      .call-ended-overlay svg {
+        width: 36px;
+        height: 36px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="video-container">
-    <video id="mainVideo" class="full-video" autoplay loop playsinline muted>
+  <div class="video-container" id="callContainer">
+    <video id="mainVideo" class="full-video" autoplay playsinline muted>
       <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
       Seu navegador não suporta vídeo.
     </video>
@@ -193,11 +228,18 @@
       <video id="userCam" autoplay muted playsinline></video>
     </div>
 
-    <button class="end-call" onclick="alert('Chamada encerrada')">
-      <svg viewBox="0 0 24 24">
+    <button class="end-call" id="endCallBtn" aria-label="Encerrar chamada">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/>
       </svg>
     </button>
+  </div>
+
+  <div class="call-ended-overlay" id="callEndedOverlay" aria-live="polite" role="alert" aria-atomic="true" aria-label="Chamada encerrada">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <path d="M21 15.46l-5.27-.61a1 1 0 00-1 .39l-2.15 2.64a15.63 15.63 0 01-7.14-7.14l2.64-2.15a1 1 0 00.39-1L8.54 3H3a1 1 0 00-1 1 19 19 0 0019 19 1 1 0 001-1v-5.46z"/>
+    </svg>
+    <div>Chamada Encerrada</div>
   </div>
 
   <script>
@@ -205,6 +247,13 @@
     const callTimeElem = document.getElementById('callTime');
     const callAudio = document.getElementById('callAudio');
     const mainVideo = document.getElementById('mainVideo');
+    const endCallBtn = document.getElementById('endCallBtn');
+    const callEndedOverlay = document.getElementById('callEndedOverlay');
+    const callContainer = document.getElementById('callContainer');
+
+    // Timer da chamada
+    let seconds = 0;
+    let callTimer;
 
     async function startCamera() {
       try {
@@ -215,17 +264,6 @@
       }
     }
 
-    // Sincronizar audio para tocar junto com o vídeo
-    mainVideo.onplay = () => {
-      callAudio.play().catch(() => {
-        // Pode falhar se o navegador bloquear autoplay, não se preocupe
-      });
-    };
-    mainVideo.onpause = () => {
-      callAudio.pause();
-    };
-
-    let seconds = 0;
     function updateCallTime() {
       seconds++;
       const m = String(Math.floor(seconds / 60)).padStart(2, '0');
@@ -233,8 +271,42 @@
       callTimeElem.textContent = `${m}:${s}`;
     }
 
-    setInterval(updateCallTime, 1000);
+    function startCallTimer() {
+      callTimer = setInterval(updateCallTime, 1000);
+    }
+
+    function stopCallTimer() {
+      clearInterval(callTimer);
+    }
+
+    // Função para encerrar a chamada
+    function endCall() {
+      // Pausar vídeo e áudio
+      mainVideo.pause();
+      callAudio.pause();
+      stopCallTimer();
+
+      // Ocultar interface da chamada
+      callContainer.style.display = 'none';
+
+      // Mostrar tela de chamada encerrada
+      callEndedOverlay.classList.add('show');
+    }
+
+    // Quando o vídeo começar a rodar, tocar áudio junto
+    mainVideo.onplay = () => {
+      callAudio.play().catch(() => {});
+      startCallTimer();
+    };
+
+    // Quando o vídeo terminar, encerrar a chamada
+    mainVideo.onended = () => {
+      endCall();
+    };
+
+    // Botão para encerrar chamada manualmente
+    endCallBtn.addEventListener('click', () => {
+      endCall();
+    });
+
     startCamera();
-  </script>
-</body>
-</html>
