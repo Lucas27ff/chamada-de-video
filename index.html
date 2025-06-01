@@ -54,7 +54,7 @@
     }
     .self-video {
       position: absolute;
-      bottom: 70px;  /* subi 50px (antes 20px) */
+      bottom: 70px;
       right: 20px;
       width: 110px;
       height: 160px;
@@ -72,10 +72,10 @@
     }
     .end-call {
       position: absolute;
-      bottom: 110px; /* subi 70px (antes 40px) */
+      bottom: 110px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: #ff3b30;
+      background-color: #ff5c5c; /* vermelho mais claro */
       border: none;
       border-radius: 50%;
       width: 75px;
@@ -89,21 +89,23 @@
       z-index: 10;
     }
     .end-call:hover {
-      background-color: #e60000;
+      background-color: #ff3b3b; /* um pouco mais forte no hover */
     }
     .end-call-icon {
       width: 32px;
       height: 32px;
-      filter: invert(1);
+      filter: none; /* remover invert pra ficar branco normal */
+      fill: white;
       user-select: none;
       pointer-events: none;
+      filter: brightness(0) invert(1); /* branco puro */
     }
 
     @media (max-width: 480px) {
       .self-video {
         width: 85px;
         height: 130px;
-        bottom: 55px;  /* subi 40px (antes 15px) */
+        bottom: 55px;
         right: 15px;
         border-width: 2px;
       }
@@ -117,7 +119,7 @@
       .end-call {
         width: 60px;
         height: 60px;
-        bottom: 70px;  /* subi 50px (antes 20px) */
+        bottom: 70px;
       }
       .end-call-icon {
         width: 24px;
