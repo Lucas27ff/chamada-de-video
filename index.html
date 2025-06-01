@@ -3,14 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <title>Chamada com Juliana</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-      background-color: #000;
+      margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000;
       font-family: sans-serif;
     }
     .video-container {
@@ -18,50 +14,56 @@
       width: 100vw;
       height: 100vh;
       background-color: black;
+      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     .full-video {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain; /* Vídeo inteiro, sem cortar */
-      background-color: black;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover; /* cobre toda tela sem deixar barras pretas */
+      z-index: 1;
     }
     .user-info {
       position: absolute;
-      top: 20px;
-      left: 20px;
+      top: 15px;
+      left: 15px;
       display: flex;
       align-items: center;
-      background-color: rgba(0,0,0,0.6);
-      padding: 10px 14px;
-      border-radius: 30px;
+      background-color: rgba(0,0,0,0.3); /* mais transparente */
+      padding: 8px 12px;
+      border-radius: 25px;
       z-index: 10;
     }
     .user-info img {
-      width: 50px;
-      height: 50px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       margin-right: 10px;
       border: 2px solid white;
+      object-fit: cover;
     }
     .user-info span {
-      font-size: 18px;
-      font-weight: bold;
+      font-size: 17px;
+      font-weight: 600;
       color: white;
+      user-select: none;
     }
     .self-video {
       position: absolute;
       bottom: 20px;
       right: 20px;
-      width: 100px;
-      height: 150px;
-      border-radius: 12px;
+      width: 110px;
+      height: 160px;
+      border-radius: 15px;
       overflow: hidden;
-      border: 2px solid white;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      border: 2.5px solid white;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
       z-index: 10;
+      background: black;
     }
     .self-video video {
       width: 100%;
@@ -76,13 +78,13 @@
       background-color: #ff3b30;
       border: none;
       border-radius: 50%;
-      width: 70px;
-      height: 70px;
+      width: 75px;
+      height: 75px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
       transition: background-color 0.3s;
       z-index: 10;
     }
@@ -90,26 +92,28 @@
       background-color: #e60000;
     }
     .end-call-icon {
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       filter: invert(1);
+      user-select: none;
+      pointer-events: none;
     }
 
-    /* Ajustes para mobile */
+    /* Mobile tweaks */
     @media (max-width: 480px) {
       .self-video {
-        width: 70px;
-        height: 105px;
+        width: 85px;
+        height: 130px;
         bottom: 15px;
         right: 15px;
-        border-width: 1.5px;
+        border-width: 2px;
       }
       .user-info img {
         width: 40px;
         height: 40px;
       }
       .user-info span {
-        font-size: 16px;
+        font-size: 15px;
       }
       .end-call {
         width: 60px;
