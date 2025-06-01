@@ -17,12 +17,16 @@
       position: relative;
       width: 100vw;
       height: 100vh;
-      overflow: hidden;
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .full-video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain; /* Vídeo inteiro, sem cortar */
+      background-color: black;
     }
     .user-info {
       position: absolute;
@@ -69,7 +73,7 @@
       bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: #ff3b30; /* vermelho total */
+      background-color: #ff3b30;
       border: none;
       border-radius: 50%;
       width: 70px;
@@ -88,14 +92,41 @@
     .end-call-icon {
       width: 30px;
       height: 30px;
-      filter: invert(1); /* ícone branco */
+      filter: invert(1);
+    }
+
+    /* Ajustes para mobile */
+    @media (max-width: 480px) {
+      .self-video {
+        width: 70px;
+        height: 105px;
+        bottom: 15px;
+        right: 15px;
+        border-width: 1.5px;
+      }
+      .user-info img {
+        width: 40px;
+        height: 40px;
+      }
+      .user-info span {
+        font-size: 16px;
+      }
+      .end-call {
+        width: 60px;
+        height: 60px;
+        bottom: 20px;
+      }
+      .end-call-icon {
+        width: 24px;
+        height: 24px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="video-container">
-    <!-- Vídeo da Juliana -->
-    <video class="full-video" autoplay muted loop playsinline>
+    <!-- Vídeo da Juliana (sempre mudo) -->
+    <video id="videoJuliana" class="full-video" autoplay loop playsinline muted>
       <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
       Seu navegador não suporta vídeo.
     </video>
@@ -122,12 +153,12 @@
   </div>
 
   <script>
-    const video = document.getElementById('userCam');
+    const videoUser = document.getElementById('userCam');
 
     async function startCamera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        video.srcObject = stream;
+        videoUser.srcObject = stream;
       } catch (err) {
         alert('Erro ao acessar a câmera: ' + err.message);
       }
