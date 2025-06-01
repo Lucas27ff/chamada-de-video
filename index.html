@@ -165,12 +165,12 @@
 </head>
 <body>
   <div class="video-container">
-    <video id="mainVideo" class="full-video" autoplay loop playsinline muted>
+    <video id="mainVideo" class="full-video" autoplay playsinline>
       <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
       Seu navegador não suporta vídeo.
     </video>
 
-    <audio id="callAudio" loop>
+    <audio id="callAudio">
       <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp3" type="audio/mpeg" />
       Seu navegador não suporta áudio.
     </audio>
@@ -205,6 +205,7 @@
     const callTimeElem = document.getElementById('callTime');
     const callAudio = document.getElementById('callAudio');
     const mainVideo = document.getElementById('mainVideo');
+    const endCallButton = document.querySelector('.end-call');
 
     async function startCamera() {
       try {
@@ -215,26 +216,46 @@
       }
     }
 
-    // Sincronizar audio para tocar junto com o vídeo
     mainVideo.onplay = () => {
-      callAudio.play().catch(() => {
-        // Pode falhar se o navegador bloquear autoplay, não se preocupe
-      });
+      callAudio.play().catch(() => {});
     };
+
     mainVideo.onpause = () => {
       callAudio.pause();
     };
 
     let seconds = 0;
-    function updateCallTime() {
+    let timerInterval = setInterval(() => {
       seconds++;
       const m = String(Math.floor(seconds / 60)).padStart(2, '0');
       const s = String(seconds % 60).padStart(2, '0');
       callTimeElem.textContent = `${m}:${s}`;
-    }
+    }, 1000);
 
-    setInterval(updateCallTime, 1000);
     startCamera();
+
+    mainVideo.onended = () => {
+      clearInterval(timerInterval);
+      callAudio.pause();
+      endCallButton.style.display = "none";
+      showEndMessage();
+    };
+
+    function showEndMessage() {
+      const msg = document.createElement("div");
+      msg.textContent = "Chamada encerrada";
+      msg.style.position = "absolute";
+      msg.style.top = "50%";
+      msg.style.left = "50%";
+      msg.style.transform = "translate(-50%, -50%)";
+      msg.style.fontSize = "28px";
+      msg.style.color = "#fff";
+      msg.style.background = "rgba(0,0,0,0.7)";
+      msg.style.padding = "20px 40px";
+      msg.style.borderRadius = "15px";
+      msg.style.zIndex = "999";
+      document.body.appendChild(msg);
+    }
   </script>
 </body>
 </html>
