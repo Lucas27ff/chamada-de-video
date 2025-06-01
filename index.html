@@ -131,7 +131,7 @@
       user-select: none;
       pointer-events: none;
     }
-    #callEndedMessage, #alreadyCalledMessage {
+    #callEndedMessage {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -144,13 +144,43 @@
       border-radius: 10px;
       z-index: 20;
       display: none;
-      text-align: center;
+    }
+    @media (max-width: 480px) {
+      .self-video {
+        width: 85px;
+        height: 130px;
+        bottom: 55px;
+        right: 15px;
+        border-width: 2px;
+      }
+      .user-info img {
+        width: 40px;
+        height: 40px;
+      }
+      .user-name {
+        font-size: 15px;
+      }
+      .call-time {
+        font-size: 12px;
+      }
+      .call-secure {
+        font-size: 11px;
+      }
+      .end-call {
+        width: 60px;
+        height: 60px;
+        bottom: 70px;
+      }
+      .end-call svg {
+        width: 24px;
+        height: 24px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="video-container" id="videoContainer">
-    <video id="mainVideo" class="full-video" playsinline muted>
+  <div class="video-container">
+    <video id="mainVideo" class="full-video" autoplay playsinline muted>
       <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
       Seu navegador não suporta vídeo.
     </video>
@@ -190,7 +220,6 @@
     </button>
 
     <div id="callEndedMessage">Chamada encerrada</div>
-    <div id="alreadyCalledMessage">Você já fez a chamada e não pode fazer novamente.</div>
   </div>
 
   <script>
@@ -200,7 +229,6 @@
     const mainVideo = document.getElementById('mainVideo');
     const endCallAudio = document.getElementById('endCallAudio');
     const callEndedMessage = document.getElementById('callEndedMessage');
-    const alreadyCalledMessage = document.getElementById('alreadyCalledMessage');
 
     let seconds = 0;
     let callInterval;
@@ -217,4 +245,60 @@
 
     function updateCallTime() {
       seconds++;
-      const m = String(Math.floor(seconds / 60)).padStart
+      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      callTimeElem.textContent = `${m}:${s}`;
+    }
+
+    function endCall() {
+      if (callEnded) return; // evita múltiplas chamadas
+      callEnded = true;
+
+      // Pausar vídeo e áudio da chamada
+      mainVideo.pause();
+      callAudio.pause();
+
+      // Remover loop do vídeo para garantir que não repita
+      mainVideo.loop = false;
+
+      // Parar câmera do usuário
+      if (videoUser.srcObject) {
+        videoUser.srcObject.getTracks().forEach(track => track.stop());
+      }
+
+      // Mostrar mensagem de encerramento
+      callEndedMessage.style.display = 'block';
+
+      // Parar timer
+      clearInterval(callInterval);
+
+      // Tocar som de encerramento
+      endCallAudio.play();
+    }
+
+    function endCallManually() {
+      endCall();
+      alert('Chamada encerrada');
+    }
+
+    mainVideo.onplay = () => {
+      if (!callEnded) {
+        callAudio.play().catch(() => {});
+      }
+    };
+
+    mainVideo.onpause = () => {
+      callAudio.pause();
+    };
+
+    // Detecta fim do vídeo para encerrar a chamada automaticamente
+    mainVideo.onended = () => {
+      endCall();
+    };
+
+    callInterval = setInterval(updateCallTime, 1000);
+
+    startCamera();
+  </script>
+</body>
+</html>
