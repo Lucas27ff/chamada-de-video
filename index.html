@@ -1,240 +1,86 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <title>Chamada com Juliana</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <style>
-    html, body {
-      margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000;
-      font-family: sans-serif;
-    }
-    .video-container {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      background-color: black;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .full-video {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 1;
-    }
-    .user-info {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      z-index: 10;
-      color: white;
-      user-select: none;
-      max-width: 180px;
-    }
-    .user-info-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 4px;
-      width: 100%;
-    }
-    .user-info img {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      margin-right: 10px;
-      border: 2px solid white;
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-    .user-name {
-      font-size: 17px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex-grow: 1;
-    }
-    .call-time {
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 2px;
-      color: #ddd;
-      font-family: monospace;
-    }
-    .call-secure {
-      font-size: 12px;
-      color: #ffffff;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      line-height: 1.4;
-    }
-    .call-secure svg {
-      width: 14px;
-      height: 14px;
-      fill: white;
-      flex-shrink: 0;
-    }
-    .self-video {
-      position: absolute;
-      bottom: 70px;
-      right: 20px;
-      width: 110px;
-      height: 160px;
-      border-radius: 15px;
-      overflow: hidden;
-      border: 2.5px solid white;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
-      z-index: 10;
-      background: black;
-    }
-    .self-video video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .end-call {
-      position: absolute;
-      bottom: 110px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #d32f2f;
-      border: none;
-      border-radius: 50%;
-      width: 75px;
-      height: 75px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(0,0,0,0.7);
-      transition: background-color 0.3s;
-      z-index: 10;
-    }
-    .end-call:hover {
-      background-color: #b71c1c;
-    }
-    .end-call svg {
-      width: 32px;
-      height: 32px;
-      fill: white;
-      user-select: none;
-      pointer-events: none;
-    }
-    @media (max-width: 480px) {
-      .self-video {
-        width: 85px;
-        height: 130px;
-        bottom: 55px;
-        right: 15px;
-        border-width: 2px;
-      }
-      .user-info img {
-        width: 40px;
-        height: 40px;
-      }
-      .user-name {
-        font-size: 15px;
-      }
-      .call-time {
-        font-size: 12px;
-      }
-      .call-secure {
-        font-size: 11px;
-      }
-      .end-call {
-        width: 60px;
-        height: 60px;
-        bottom: 70px;
-      }
-      .end-call svg {
-        width: 24px;
-        height: 24px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="video-container">
-    <video id="mainVideo" class="full-video" autoplay loop playsinline muted>
-      <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
-      Seu navegador não suporta vídeo.
-    </video>
+<!-- substitua seu código anterior por este -->
+<video id="mainVideo" class="full-video" autoplay playsinline muted>
+  <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
+</video>
 
-    <audio id="callAudio" loop>
-      <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp3" type="audio/mpeg" />
-      Seu navegador não suporta áudio.
-    </audio>
+<audio id="callAudio">
+  <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp3" type="audio/mpeg" />
+</audio>
 
-    <div class="user-info">
-      <div class="user-info-header">
-        <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Juliana" />
-        <span class="user-name">Juliana</span>
-      </div>
-      <span id="callTime" class="call-time">00:00</span>
-      <span class="call-secure">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 1C9.239 1 7 3.239 7 6v4H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6c0-2.761-2.239-5-5-5zm-3 9V6a3 3 0 016 0v4H9z"/>
-        </svg>
-        Chamada criptografada e segura de ponta a ponta
-      </span>
-    </div>
+<div id="endCallMessage" class="end-call-msg">🔴 Chamada encerrada</div>
 
-    <div class="self-video">
-      <video id="userCam" autoplay muted playsinline></video>
-    </div>
+<style>
+  .end-call-msg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.85);
+    padding: 30px 40px;
+    border-radius: 15px;
+    color: white;
+    font-size: 22px;
+    z-index: 999;
+    text-align: center;
+    display: none;
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
+  }
+</style>
 
-    <button class="end-call" onclick="alert('Chamada encerrada')">
-      <svg viewBox="0 0 24 24">
-        <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/>
-      </svg>
-    </button>
-  </div>
+<script>
+  const videoUser = document.getElementById('userCam');
+  const callTimeElem = document.getElementById('callTime');
+  const callAudio = document.getElementById('callAudio');
+  const mainVideo = document.getElementById('mainVideo');
+  const endCallMessage = document.getElementById('endCallMessage');
+  const endButton = document.querySelector('.end-call');
 
-  <script>
-    const videoUser = document.getElementById('userCam');
-    const callTimeElem = document.getElementById('callTime');
-    const callAudio = document.getElementById('callAudio');
-    const mainVideo = document.getElementById('mainVideo');
+  let seconds = 0;
+  let timerInterval;
+  let stream;
 
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        videoUser.srcObject = stream;
-      } catch (err) {
-        alert('Erro ao acessar a câmera: ' + err.message);
-      }
+  async function startCamera() {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      videoUser.srcObject = stream;
+    } catch (err) {
+      alert('Erro ao acessar a câmera: ' + err.message);
+    }
+  }
+
+  function updateCallTime() {
+    seconds++;
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    callTimeElem.textContent = `${m}:${s}`;
+  }
+
+  function startTimer() {
+    timerInterval = setInterval(updateCallTime, 1000);
+  }
+
+  function stopCall() {
+    clearInterval(timerInterval);
+    callAudio.pause();
+    callAudio.currentTime = 0;
+
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
     }
 
-    // Sincronizar audio para tocar junto com o vídeo
-    mainVideo.onplay = () => {
-      callAudio.play().catch(() => {
-        // Pode falhar se o navegador bloquear autoplay, não se preocupe
-      });
-    };
-    mainVideo.onpause = () => {
-      callAudio.pause();
-    };
-
-    let seconds = 0;
-    function updateCallTime() {
-      seconds++;
-      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const s = String(seconds % 60).padStart(2, '0');
-      callTimeElem.textContent = `${m}:${s}`;
+    if (endButton) {
+      endButton.style.display = 'none';
     }
 
-    setInterval(updateCallTime, 1000);
-    startCamera();
-  </script>
-</body>
-</html>
+    endCallMessage.style.display = 'block';
+  }
+
+  mainVideo.onplay = () => {
+    callAudio.play().catch(() => {});
+    startTimer();
+  };
+
+  mainVideo.onended = stopCall;
+
+  startCamera();
+</script>
