@@ -102,22 +102,34 @@
       height: 100%;
       object-fit: cover;
     }
-    .end-call-msg {
+    .end-call {
       position: absolute;
-      top: 50%;
+      bottom: 110px;
       left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.8);
-      padding: 30px 40px;
-      border-radius: 15px;
-      color: white;
-      font-size: 20px;
-      z-index: 20;
-      text-align: center;
-      display: none;
-      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+      transform: translateX(-50%);
+      background-color: #d32f2f;
+      border: none;
+      border-radius: 50%;
+      width: 75px;
+      height: 75px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+      transition: background-color 0.3s;
+      z-index: 10;
     }
-
+    .end-call:hover {
+      background-color: #b71c1c;
+    }
+    .end-call svg {
+      width: 32px;
+      height: 32px;
+      fill: white;
+      user-select: none;
+      pointer-events: none;
+    }
     @media (max-width: 480px) {
       .self-video {
         width: 85px;
@@ -139,17 +151,26 @@
       .call-secure {
         font-size: 11px;
       }
+      .end-call {
+        width: 60px;
+        height: 60px;
+        bottom: 70px;
+      }
+      .end-call svg {
+        width: 24px;
+        height: 24px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="video-container">
-    <video id="mainVideo" class="full-video" autoplay playsinline>
+    <video id="mainVideo" class="full-video" autoplay loop playsinline muted>
       <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
       Seu navegador não suporta vídeo.
     </video>
 
-    <audio id="callAudio">
+    <audio id="callAudio" loop>
       <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp3" type="audio/mpeg" />
       Seu navegador não suporta áudio.
     </audio>
@@ -161,7 +182,7 @@
       </div>
       <span id="callTime" class="call-time">00:00</span>
       <span class="call-secure">
-        <svg viewBox="0 0 24 24">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 1C9.239 1 7 3.239 7 6v4H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6c0-2.761-2.239-5-5-5zm-3 9V6a3 3 0 016 0v4H9z"/>
         </svg>
         Chamada criptografada e segura de ponta a ponta
@@ -172,9 +193,11 @@
       <video id="userCam" autoplay muted playsinline></video>
     </div>
 
-    <div id="endCallMessage" class="end-call-msg">
-      🔴 Chamada encerrada
-    </div>
+    <button class="end-call" onclick="alert('Chamada encerrada')">
+      <svg viewBox="0 0 24 24">
+        <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/>
+      </svg>
+    </button>
   </div>
 
   <script>
@@ -182,12 +205,27 @@
     const callTimeElem = document.getElementById('callTime');
     const callAudio = document.getElementById('callAudio');
     const mainVideo = document.getElementById('mainVideo');
-    const endCallMessage = document.getElementById('endCallMessage');
+
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        videoUser.srcObject = stream;
+      } catch (err) {
+        alert('Erro ao acessar a câmera: ' + err.message);
+      }
+    }
+
+    // Sincronizar audio para tocar junto com o vídeo
+    mainVideo.onplay = () => {
+      callAudio.play().catch(() => {
+        // Pode falhar se o navegador bloquear autoplay, não se preocupe
+      });
+    };
+    mainVideo.onpause = () => {
+      callAudio.pause();
+    };
 
     let seconds = 0;
-    let timerInterval;
-    let stream;
-
     function updateCallTime() {
       seconds++;
       const m = String(Math.floor(seconds / 60)).padStart(2, '0');
@@ -195,40 +233,7 @@
       callTimeElem.textContent = `${m}:${s}`;
     }
 
-    function startCallTimer() {
-      timerInterval = setInterval(updateCallTime, 1000);
-    }
-
-    async function startCamera() {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        videoUser.srcObject = stream;
-      } catch (err) {
-        alert('Erro ao acessar a câmera: ' + err.message);
-      }
-    }
-
-    function endCall() {
-      clearInterval(timerInterval);
-      callAudio.pause();
-      callAudio.currentTime = 0;
-
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-
-      endCallMessage.style.display = 'block';
-    }
-
-    mainVideo.onplay = () => {
-      callAudio.play().catch(() => {});
-      startCallTimer();
-    };
-
-    mainVideo.onended = () => {
-      endCall();
-    };
-
+    setInterval(updateCallTime, 1000);
     startCamera();
   </script>
 </body>
