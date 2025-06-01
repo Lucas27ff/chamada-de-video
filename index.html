@@ -5,6 +5,7 @@
   <title>Chamada com Juliana</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <style>
+    /* seu CSS permanece igual */
     html, body {
       margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000;
       font-family: sans-serif;
@@ -130,6 +131,20 @@
       user-select: none;
       pointer-events: none;
     }
+    #callEndedMessage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 2rem;
+      font-weight: 700;
+      background: rgba(0,0,0,0.7);
+      padding: 20px 30px;
+      border-radius: 10px;
+      z-index: 20;
+      display: none;
+    }
     @media (max-width: 480px) {
       .self-video {
         width: 85px;
@@ -165,13 +180,18 @@
 </head>
 <body>
   <div class="video-container">
-    <video id="mainVideo" class="full-video" autoplay playsinline>
+    <video id="mainVideo" class="full-video" autoplay playsinline muted>
       <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
       Seu navegador não suporta vídeo.
     </video>
 
-    <audio id="callAudio">
+    <audio id="callAudio" loop>
       <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp3" type="audio/mpeg" />
+      Seu navegador não suporta áudio.
+    </audio>
+
+    <audio id="endCallAudio">
+      <source src="https://Lucas27ff.github.io/chamada-de-video/chamadaencerrada.mp3" type="audio/mpeg" />
       Seu navegador não suporta áudio.
     </audio>
 
@@ -193,11 +213,13 @@
       <video id="userCam" autoplay muted playsinline></video>
     </div>
 
-    <button class="end-call" onclick="alert('Chamada encerrada')">
+    <button class="end-call" onclick="endCallManually()">
       <svg viewBox="0 0 24 24">
         <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/>
       </svg>
     </button>
+
+    <div id="callEndedMessage">Chamada encerrada</div>
   </div>
 
   <script>
@@ -205,7 +227,12 @@
     const callTimeElem = document.getElementById('callTime');
     const callAudio = document.getElementById('callAudio');
     const mainVideo = document.getElementById('mainVideo');
-    const endCallButton = document.querySelector('.end-call');
+    const endCallAudio = document.getElementById('endCallAudio');
+    const callEndedMessage = document.getElementById('callEndedMessage');
+
+    let seconds = 0;
+    let callInterval;
+    let callEnded = false;
 
     async function startCamera() {
       try {
@@ -216,46 +243,62 @@
       }
     }
 
+    function updateCallTime() {
+      seconds++;
+      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      callTimeElem.textContent = `${m}:${s}`;
+    }
+
+    function endCall() {
+      if (callEnded) return; // evita múltiplas chamadas
+      callEnded = true;
+
+      // Pausar vídeo e áudio da chamada
+      mainVideo.pause();
+      callAudio.pause();
+
+      // Remover loop do vídeo para garantir que não repita
+      mainVideo.loop = false;
+
+      // Parar câmera do usuário
+      if (videoUser.srcObject) {
+        videoUser.srcObject.getTracks().forEach(track => track.stop());
+      }
+
+      // Mostrar mensagem de encerramento
+      callEndedMessage.style.display = 'block';
+
+      // Parar timer
+      clearInterval(callInterval);
+
+      // Tocar som de encerramento
+      endCallAudio.play();
+    }
+
+    function endCallManually() {
+      endCall();
+      alert('Chamada encerrada');
+    }
+
     mainVideo.onplay = () => {
-      callAudio.play().catch(() => {});
+      if (!callEnded) {
+        callAudio.play().catch(() => {});
+      }
     };
 
     mainVideo.onpause = () => {
       callAudio.pause();
     };
 
-    let seconds = 0;
-    let timerInterval = setInterval(() => {
-      seconds++;
-      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const s = String(seconds % 60).padStart(2, '0');
-      callTimeElem.textContent = `${m}:${s}`;
-    }, 1000);
-
-    startCamera();
-
+    // Detecta fim do vídeo para encerrar a chamada automaticamente
     mainVideo.onended = () => {
-      clearInterval(timerInterval);
-      callAudio.pause();
-      endCallButton.style.display = "none";
-      showEndMessage();
+      endCall();
     };
 
-    function showEndMessage() {
-      const msg = document.createElement("div");
-      msg.textContent = "Chamada encerrada";
-      msg.style.position = "absolute";
-      msg.style.top = "50%";
-      msg.style.left = "50%";
-      msg.style.transform = "translate(-50%, -50%)";
-      msg.style.fontSize = "28px";
-      msg.style.color = "#fff";
-      msg.style.background = "rgba(0,0,0,0.7)";
-      msg.style.padding = "20px 40px";
-      msg.style.borderRadius = "15px";
-      msg.style.zIndex = "999";
-      document.body.appendChild(msg);
-    }
+    callInterval = setInterval(updateCallTime, 1000);
+
+    startCamera();
   </script>
 </body>
 </html>
