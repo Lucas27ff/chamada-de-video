@@ -32,11 +32,21 @@
       top: 15px;
       left: 15px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      align-items: flex-start;
       background-color: rgba(0,0,0,0.3);
       padding: 8px 12px;
       border-radius: 25px;
       z-index: 10;
+      color: white;
+      user-select: none;
+      max-width: 180px;
+    }
+    .user-info-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px;
+      width: 100%;
     }
     .user-info img {
       width: 48px;
@@ -45,12 +55,27 @@
       margin-right: 10px;
       border: 2px solid white;
       object-fit: cover;
+      flex-shrink: 0;
     }
-    .user-info span {
+    .user-name {
       font-size: 17px;
       font-weight: 600;
-      color: white;
-      user-select: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-grow: 1;
+    }
+    .call-time {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      color: #ddd;
+      font-family: monospace;
+    }
+    .call-secure {
+      font-size: 12px;
+      color: #bbb;
+      line-height: 1.2;
     }
     .self-video {
       position: absolute;
@@ -75,7 +100,7 @@
       bottom: 110px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: #e53935; /* vermelho escuro e chamativo */
+      background-color: #e53935;
       border: none;
       border-radius: 50%;
       width: 75px;
@@ -89,7 +114,7 @@
       z-index: 10;
     }
     .end-call:hover {
-      background-color: #b71c1c; /* vermelho mais escuro no hover */
+      background-color: #b71c1c;
     }
     .end-call svg {
       width: 32px;
@@ -98,7 +123,6 @@
       user-select: none;
       pointer-events: none;
     }
-
     @media (max-width: 480px) {
       .self-video {
         width: 85px;
@@ -111,8 +135,14 @@
         width: 40px;
         height: 40px;
       }
-      .user-info span {
+      .user-name {
         font-size: 15px;
+      }
+      .call-time {
+        font-size: 12px;
+      }
+      .call-secure {
+        font-size: 11px;
       }
       .end-call {
         width: 60px;
@@ -134,8 +164,12 @@
     </video>
 
     <div class="user-info">
-      <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Juliana" />
-      <span>Juliana</span>
+      <div class="user-info-header">
+        <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Juliana" />
+        <span class="user-name">Juliana</span>
+      </div>
+      <span id="callTime" class="call-time">00:00</span>
+      <span class="call-secure">Chamada criptografada e segura de ponta a ponta</span>
     </div>
 
     <div class="self-video">
@@ -151,6 +185,7 @@
 
   <script>
     const videoUser = document.getElementById('userCam');
+    const callTimeElem = document.getElementById('callTime');
 
     async function startCamera() {
       try {
@@ -160,6 +195,17 @@
         alert('Erro ao acessar a câmera: ' + err.message);
       }
     }
+
+    // Contador de tempo de chamada em mm:ss
+    let seconds = 0;
+    function updateCallTime() {
+      seconds++;
+      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+      const s = String(seconds % 60).padStart(2, '0');
+      callTimeElem.textContent = `${m}:${s}`;
+    }
+
+    setInterval(updateCallTime, 1000);
 
     startCamera();
   </script>
