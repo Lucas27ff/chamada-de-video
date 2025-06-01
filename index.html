@@ -1,221 +1,146 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chamada com Juliana</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <style>
-    html, body {
-      margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000;
-      font-family: sans-serif;
+    body {
+      margin: 0;
+      background-color: black;
+      font-family: Arial, sans-serif;
+      color: white;
     }
+
     .video-container {
       position: relative;
       width: 100vw;
       height: 100vh;
-      background-color: black;
       overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
-    .full-video {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
+
+    video {
       object-fit: cover;
-      z-index: 1;
+      width: 100%;
+      height: 100%;
     }
+
+    .user-thumbnail {
+      position: absolute;
+      bottom: 90px;
+      left: 20px;
+      width: 100px;
+      height: 140px;
+      border-radius: 20px;
+      object-fit: cover;
+      border: 2px solid white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    }
+
     .user-info {
       position: absolute;
-      top: 15px;
-      left: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      z-index: 10;
+      top: 20px;
+      left: 20px;
+      background: transparent;
+      padding: 5px 10px;
+      border-radius: 8px;
       color: white;
-      user-select: none;
-      max-width: 180px;
     }
-    .user-info-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 4px;
-      width: 100%;
+
+    .user-info h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: bold;
     }
-    .user-info img {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      margin-right: 10px;
-      border: 2px solid white;
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-    .user-name {
-      font-size: 17px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex-grow: 1;
-    }
-    .call-time {
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 2px;
+
+    .user-info p {
+      margin: 4px 0 0;
+      font-size: 14px;
       color: #ddd;
-      font-family: monospace;
-    }
-    .call-secure {
-      font-size: 12px;
-      color: #ffffff;
-      font-weight: 500;
       display: flex;
       align-items: center;
       gap: 5px;
-      line-height: 1.4;
     }
-    .call-secure svg {
+
+    .user-info svg {
       width: 14px;
       height: 14px;
       fill: white;
-      flex-shrink: 0;
     }
-    .self-video {
+
+    .end-call-btn {
       position: absolute;
-      bottom: 70px;
-      right: 20px;
-      width: 110px;
-      height: 160px;
-      border-radius: 15px;
-      overflow: hidden;
-      border: 2.5px solid white;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
-      z-index: 10;
-      background: black;
-    }
-    .self-video video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .end-call {
-      position: absolute;
-      bottom: 110px;
+      bottom: 25px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: #d32f2f;
+      background-color: #e53935;
       border: none;
       border-radius: 50%;
-      width: 75px;
-      height: 75px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 18px;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(0,0,0,0.7);
-      transition: background-color 0.3s;
-      z-index: 10;
+      box-shadow: 0 0 15px rgba(0,0,0,0.7);
     }
-    .end-call:hover {
-      background-color: #b71c1c;
-    }
-    .end-call svg {
-      width: 32px;
-      height: 32px;
+
+    .end-call-btn svg {
+      width: 24px;
+      height: 24px;
       fill: white;
-      user-select: none;
-      pointer-events: none;
     }
-    @media (max-width: 480px) {
-      .self-video {
-        width: 85px;
-        height: 130px;
-        bottom: 55px;
-        right: 15px;
-        border-width: 2px;
+
+    @media (max-width: 600px) {
+      .user-thumbnail {
+        width: 80px;
+        height: 110px;
+        bottom: 100px;
+        left: 15px;
       }
-      .user-info img {
-        width: 40px;
-        height: 40px;
+
+      .user-info h2 {
+        font-size: 18px;
       }
-      .user-name {
-        font-size: 15px;
+
+      .user-info p {
+        font-size: 13px;
       }
-      .call-time {
-        font-size: 12px;
+
+      .end-call-btn {
+        padding: 16px;
+        bottom: 20px;
       }
-      .call-secure {
-        font-size: 11px;
-      }
-      .end-call {
-        width: 60px;
-        height: 60px;
-        bottom: 70px;
-      }
-      .end-call svg {
-        width: 24px;
-        height: 24px;
+
+      .end-call-btn svg {
+        width: 20px;
+        height: 20px;
       }
     }
   </style>
 </head>
 <body>
   <div class="video-container">
-    <video class="full-video" autoplay loop playsinline muted>
-      <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
+    <video autoplay muted loop playsinline>
+      <source src="https://lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4">
       Seu navegador não suporta vídeo.
     </video>
 
+    <img class="user-thumbnail" src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Juliana" />
+
     <div class="user-info">
-      <div class="user-info-header">
-        <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Juliana" />
-        <span class="user-name">Juliana</span>
-      </div>
-      <span id="callTime" class="call-time">00:00</span>
-      <span class="call-secure">
-        <svg viewBox="0 0 24 24"><path d="M12 17a2 2 0 100-4 2 2 0 000 4zm6-7h-1V7a5 5 0 00-10 0v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2zm-8-3a4 4 0 018 0v3H10V7z"/></svg>
-        Chamada criptografada e segura de ponta a ponta
-      </span>
+      <h2>Juliana</h2>
+      <p>
+        <!-- Cadeado SVG atualizado -->
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 1C9.239 1 7 3.239 7 6v4H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6c0-2.761-2.239-5-5-5zm-3 9V6a3 3 0 016 0v4H9z"/>
+        </svg>
+        Chamada criptografada de ponta a ponta
+      </p>
     </div>
 
-    <div class="self-video">
-      <video id="userCam" autoplay muted playsinline></video>
-    </div>
-
-    <button class="end-call" onclick="alert('Chamada encerrada')">
+    <button class="end-call-btn">
+      <!-- Ícone de telefone branco -->
       <svg viewBox="0 0 24 24">
-        <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/>
+        <path d="M6.62 10.79a15.093 15.093 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21c1.21.49 2.53.76 3.88.76a1 1 0 011 1v3.5a1 1 0 01-1 1C10.74 22.25 1.75 13.26 1.75 2.5a1 1 0 011-1H6.25a1 1 0 011 1c0 1.35.27 2.67.76 3.88a1 1 0 01-.21 1.11l-2.2 2.2z"/>
       </svg>
     </button>
   </div>
-
-  <script>
-    const videoUser = document.getElementById('userCam');
-    const callTimeElem = document.getElementById('callTime');
-
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        videoUser.srcObject = stream;
-      } catch (err) {
-        alert('Erro ao acessar a câmera: ' + err.message);
-      }
-    }
-
-    let seconds = 0;
-    function updateCallTime() {
-      seconds++;
-      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const s = String(seconds % 60).padStart(2, '0');
-      callTimeElem.textContent = `${m}:${s}`;
-    }
-
-    setInterval(updateCallTime, 1000);
-    startCamera();
-  </script>
 </body>
 </html>
