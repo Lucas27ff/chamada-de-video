@@ -147,8 +147,6 @@
       transition: opacity 0.3s ease;
       user-select: none;
       flex-direction: column;
-      text-align: center;
-      padding: 20px;
     }
     .call-ended-overlay.show {
       opacity: 1;
@@ -219,7 +217,7 @@
       </div>
       <span id="callTime" class="call-time">00:00</span>
       <span class="call-secure">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 1C9.239 1 7 3.239 7 6v4H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6c0-2.761-2.239-5-5-5zm-3 9V6a3 3 0 016 0v4H9z"/>
         </svg>
         Chamada criptografada e segura de ponta a ponta
@@ -239,70 +237,4 @@
 
   <div class="call-ended-overlay" id="callEndedOverlay" aria-live="polite" role="alert" aria-atomic="true" aria-label="Chamada encerrada">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-      <path d="M21 15.46l-5.27-.61a1 1 0 00-1 .39l-2.15 2.64a15.63 15.63 0 01-7.14-7.14l2.64-2.15a1 1 0 00.39-1l-.61-5.27A1 1 0 007.35 2h-.04a1 1 0 00-1 .75A18.59 18.59 0 003.17 12a18.59 18.59 0 002.14 6.25 1 1 0 00.96.62h.02a1 1 0 001-.74l.61-2.71a1 1 0 00-.27-1z"/>
-    </svg>
-    Chamada Encerrada
-  </div>
-
-  <script>
-    const videoUser = document.getElementById('userCam');
-    const callTimeElem = document.getElementById('callTime');
-    const callAudio = document.getElementById('callAudio');
-    const mainVideo = document.getElementById('mainVideo');
-    const endCallBtn = document.getElementById('endCallBtn');
-    const callEndedOverlay = document.getElementById('callEndedOverlay');
-    let callActive = true;
-    let seconds = 0;
-    let callTimer;
-
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        videoUser.srcObject = stream;
-      } catch (err) {
-        alert('Erro ao acessar a câmera: ' + err.message);
-      }
-    }
-
-    function updateCallTime() {
-      if (!callActive) return; // para o timer quando chamada termina
-      seconds++;
-      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const s = String(seconds % 60).padStart(2, '0');
-      callTimeElem.textContent = `${m}:${s}`;
-    }
-
-    // Iniciar timer a cada segundo
-    callTimer = setInterval(updateCallTime, 1000);
-
-    // Sincronizar audio para tocar junto com o vídeo
-    mainVideo.onplay = () => {
-      if (!callActive) return;
-      callAudio.play().catch(() => {
-        // Ignora se o autoplay for bloqueado
-      });
-    };
-    mainVideo.onpause = () => {
-      callAudio.pause();
-    };
-
-    // Quando o vídeo terminar, encerra chamada
-    mainVideo.onended = () => {
-      endCall();
-    };
-
-    // Função para encerrar a chamada
-    function endCall() {
-      if (!callActive) return; // evita múltiplas chamadas
-
-      callActive = false;
-
-      // Pausar video e audio
-      mainVideo.pause();
-      callAudio.pause();
-
-      // Para timer
-      clearInterval(callTimer);
-
-      // Mostrar overlay "Chamada Encerrada"
-      callEndedOverlay.classList.add
+      <path d="M21 15.46l-5.27-.61a1 1 0 00-1 .39l-2.15 2.64a15.63 15.63 0 01-7.14-7.14l2.64-2.15a1
