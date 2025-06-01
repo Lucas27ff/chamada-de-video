@@ -2,35 +2,23 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Chamada de Vídeo - Juliana</title>
+  <title>Chamada com Juliana</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000;
       font-family: sans-serif;
-    }
-
-    body {
-      background-color: #101d25;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      position: relative;
     }
 
     .video-container {
       position: relative;
-      width: 90%;
-      max-width: 400px;
-      aspect-ratio: 9/16;
-      border-radius: 20px;
+      width: 100vw;
+      height: 100vh;
       overflow: hidden;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      background-color: black;
     }
 
     video {
@@ -41,56 +29,72 @@
 
     .user-info {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 20px;
+      left: 20px;
       display: flex;
       align-items: center;
       background-color: rgba(0,0,0,0.6);
-      padding: 8px 12px;
+      padding: 10px 14px;
       border-radius: 30px;
     }
 
     .user-info img {
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       margin-right: 10px;
       border: 2px solid white;
     }
 
     .user-info span {
+      font-size: 18px;
       font-weight: bold;
-      font-size: 16px;
+      color: white;
     }
 
     .end-call {
-      margin-top: 20px;
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
       background-color: #ff3b30;
-      color: white;
       border: none;
-      padding: 15px 25px;
-      border-radius: 50px;
-      font-size: 18px;
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
       transition: background-color 0.3s;
     }
 
     .end-call:hover {
       background-color: #e60000;
     }
+
+    .end-call-icon {
+      width: 30px;
+      height: 30px;
+      filter: invert(100%);
+    }
   </style>
 </head>
 <body>
+
   <div class="video-container">
     <video id="userCam" autoplay muted playsinline></video>
 
     <div class="user-info">
-      <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Foto de Juliana">
+      <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Juliana">
       <span>Juliana</span>
     </div>
-  </div>
 
-  <button class="end-call" onclick="alert('Chamada encerrada')">Desligar</button>
+    <button class="end-call" onclick="alert('Chamada encerrada')">
+      <img src="https://cdn-icons-png.flaticon.com/512/724/724664.png" class="end-call-icon" alt="Desligar">
+    </button>
+  </div>
 
   <script>
     const video = document.getElementById('userCam');
@@ -106,5 +110,6 @@
 
     startCamera();
   </script>
+
 </body>
 </html>
