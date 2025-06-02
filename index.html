@@ -2,14 +2,72 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Chamada com Juliana</title>
+  <title>Chamada de Juliana</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <style>
     html, body {
-      margin: 0; padding: 0; height: 100%; overflow: hidden; background-color: #000;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, sans-serif;
-      user-select: none;
+      margin: 0; padding: 0; height: 100%; background-color: #000;
+      font-family: sans-serif;
     }
+
+    .incoming-call {
+      position: absolute;
+      inset: 0;
+      background-color: #000;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .incoming-call img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid #0f0;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+
+    .incoming-call h2 {
+      font-size: 1.5rem;
+      margin: 0;
+      margin-bottom: 8px;
+    }
+
+    .incoming-call p {
+      font-size: 1rem;
+      color: #ccc;
+      margin-bottom: 30px;
+    }
+
+    .call-buttons {
+      display: flex;
+      gap: 30px;
+    }
+
+    .call-buttons button {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+    }
+
+    .accept-btn {
+      background-color: #4CAF50;
+    }
+
+    .decline-btn {
+      background-color: #f44336;
+    }
+
+    .call-interface {
+      display: none;
+    }
+
     .video-container {
       position: relative;
       width: 100vw;
@@ -20,6 +78,7 @@
       justify-content: center;
       align-items: center;
     }
+
     .full-video {
       position: absolute;
       top: 0; left: 0;
@@ -28,6 +87,7 @@
       object-fit: cover;
       z-index: 1;
     }
+
     .user-info {
       position: absolute;
       top: 15px;
@@ -37,14 +97,17 @@
       align-items: flex-start;
       z-index: 10;
       color: white;
+      user-select: none;
       max-width: 180px;
     }
+
     .user-info-header {
       display: flex;
       align-items: center;
       margin-bottom: 4px;
       width: 100%;
     }
+
     .user-info img {
       width: 48px;
       height: 48px;
@@ -54,21 +117,19 @@
       object-fit: cover;
       flex-shrink: 0;
     }
+
     .user-name {
       font-size: 17px;
       font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      flex-grow: 1;
     }
+
     .call-time {
       font-size: 13px;
       font-weight: 500;
-      margin-bottom: 2px;
       color: #ddd;
       font-family: monospace;
     }
+
     .call-secure {
       font-size: 12px;
       color: #ffffff;
@@ -78,12 +139,13 @@
       gap: 5px;
       line-height: 1.4;
     }
+
     .call-secure svg {
       width: 14px;
       height: 14px;
       fill: white;
-      flex-shrink: 0;
     }
+
     .self-video {
       position: absolute;
       bottom: 70px;
@@ -93,15 +155,16 @@
       border-radius: 15px;
       overflow: hidden;
       border: 2.5px solid white;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
-      z-index: 10;
       background: black;
+      z-index: 10;
     }
+
     .self-video video {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+
     .end-call {
       position: absolute;
       bottom: 110px;
@@ -117,236 +180,150 @@
       justify-content: center;
       cursor: pointer;
       box-shadow: 0 0 20px rgba(0,0,0,0.7);
-      transition: background-color 0.3s;
       z-index: 10;
     }
-    .end-call:hover {
-      background-color: #b71c1c;
-    }
+
     .end-call svg {
       width: 32px;
       height: 32px;
       fill: white;
-      user-select: none;
-      pointer-events: none;
     }
+
     #callEndedMessage {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      color: #fff;
-      font-size: 1.8rem;
+      color: white;
+      font-size: 2rem;
       font-weight: 700;
-      background: rgba(30, 30, 30, 0.85);
-      padding: 25px 40px;
-      border-radius: 12px;
-      z-index: 9999;
+      background: rgba(0,0,0,0.7);
+      padding: 20px 30px;
+      border-radius: 10px;
+      z-index: 20;
       display: none;
-      text-align: center;
-      max-width: 90vw;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-      line-height: 1.4;
-      user-select: none;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    @keyframes fadeInMessage {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-    #callEndedMessage.show {
-      display: block;
-      animation: fadeInMessage 0.5s ease forwards;
-    }
-    @media (max-width: 480px) {
-      .self-video {
-        width: 85px;
-        height: 130px;
-        bottom: 55px;
-        right: 15px;
-        border-width: 2px;
-      }
-      .user-info img {
-        width: 40px;
-        height: 40px;
-      }
-      .user-name {
-        font-size: 15px;
-      }
-      .call-time {
-        font-size: 12px;
-      }
-      .call-secure {
-        font-size: 11px;
-      }
-      .end-call {
-        width: 60px;
-        height: 60px;
-        bottom: 70px;
-      }
-      .end-call svg {
-        width: 24px;
-        height: 24px;
-      }
     }
   </style>
 </head>
 <body>
-  <div class="video-container">
-    <video id="mainVideo" class="full-video" autoplay playsinline muted>
-      <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
-      Seu navegador não suporta vídeo.
-    </video>
-
-    <audio id="callAudio" loop>
-      <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp3" type="audio/mpeg" />
-      Seu navegador não suporta áudio.
-    </audio>
-
-    <audio id="endCallAudio">
-      <source src="https://Lucas27ff.github.io/chamada-de-video/chamadaencerrada.mp3" type="audio/mpeg" />
-      Seu navegador não suporta áudio.
-    </audio>
-
-    <div class="user-info">
-      <div class="user-info-header">
-        <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Juliana" />
-        <span class="user-name">Juliana</span>
-      </div>
-      <span id="callTime" class="call-time">00:00</span>
-      <span class="call-secure">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 1C9.239 1 7 3.239 7 6v4H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6c0-2.761-2.239-5-5-5zm-3 9V6a3 3 0 016 0v4H9z"/>
-        </svg>
-        Chamada criptografada e segura de ponta a ponta
-      </span>
+  <div class="incoming-call" id="incomingCall">
+    <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Chamada recebida" />
+    <h2>Chamada de Juliana</h2>
+    <p>Vídeo via WhatsApp</p>
+    <div class="call-buttons">
+      <button class="decline-btn" onclick="declineCall()"></button>
+      <button class="accept-btn" onclick="startCall()"></button>
     </div>
-
-    <div class="self-video">
-      <video id="userCam" autoplay muted playsinline></video>
-    </div>
-
-    <button class="end-call" id="endCallButton" onclick="endCallManually()">
-      <svg viewBox="0 0 24 24">
-        <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/>
-      </svg>
-    </button>
-
-    <div id="callEndedMessage"></div>
   </div>
 
+  <div class="call-interface" id="callInterface">
+    <div class="video-container">
+      <video id="mainVideo" class="full-video" autoplay playsinline muted>
+        <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp4" type="video/mp4" />
+      </video>
+
+      <div class="user-info">
+        <div class="user-info-header">
+          <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Juliana" />
+          <span class="user-name">Juliana</span>
+        </div>
+        <span id="callTime" class="call-time">00:00</span>
+        <span class="call-secure">
+          <svg viewBox="0 0 24 24"><path d="M12 1C9.239 1 7 3.239 7 6v4H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6c0-2.761-2.239-5-5-5zm-3 9V6a3 3 0 016 0v4H9z"/></svg>
+          Chamada criptografada e segura de ponta a ponta
+        </span>
+      </div>
+
+      <div class="self-video">
+        <video id="userCam" autoplay muted playsinline></video>
+      </div>
+
+      <button class="end-call" onclick="endCallManually()">
+        <svg viewBox="0 0 24 24">
+          <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/>
+        </svg>
+      </button>
+
+      <div id="callEndedMessage">A chamada foi encerrada</div>
+    </div>
+  </div>
+
+  <audio id="ringtone" loop>
+    <source src="https://Lucas27ff.github.io/chamada-de-video/veri.mp3" type="audio/mpeg" />
+  </audio>
+
+  <audio id="endCallAudio">
+    <source src="https://Lucas27ff.github.io/chamada-de-video/chamadaencerrada.mp3" type="audio/mpeg" />
+  </audio>
+
   <script>
-    const videoUser = document.getElementById('userCam');
-    const callTimeElem = document.getElementById('callTime');
-    const callAudio = document.getElementById('callAudio');
+    const userCam = document.getElementById('userCam');
+    const callTime = document.getElementById('callTime');
     const mainVideo = document.getElementById('mainVideo');
+    const incomingCall = document.getElementById('incomingCall');
+    const callInterface = document.getElementById('callInterface');
+    const ringtone = document.getElementById('ringtone');
     const endCallAudio = document.getElementById('endCallAudio');
     const callEndedMessage = document.getElementById('callEndedMessage');
-    const endCallButton = document.getElementById('endCallButton');
 
     let seconds = 0;
     let callInterval;
     let callEnded = false;
 
-    // Verifica se chamada já foi encerrada em sessão anterior
-    if(localStorage.getItem('callEnded') === 'true') {
-      showCallEndedMessage();
-      disableCall();
+    // Verifica se a chamada já foi feita antes
+    if (localStorage.getItem('callEnded')) {
+      incomingCall.innerHTML = '<h2 style="text-align:center;">A chamada foi encerrada</h2>';
     } else {
-      startCall();
+      ringtone.play().catch(() => {});
     }
 
-    async function startCall() {
-      try {
-        await startCamera();
-        mainVideo.play();
-        callAudio.play().catch(() => {});
-        callInterval = setInterval(updateCallTime, 1000);
-      } catch (err) {
-        alert('Erro ao iniciar chamada: ' + err.message);
-      }
+    function startCall() {
+      incomingCall.style.display = 'none';
+      callInterface.style.display = 'block';
+      ringtone.pause();
+
+      navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+        .then(stream => {
+          userCam.srcObject = stream;
+        })
+        .catch(err => {
+          alert('Erro ao acessar a câmera: ' + err.message);
+        });
+
+      mainVideo.play();
+      callInterval = setInterval(() => {
+        seconds++;
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const s = String(seconds % 60).padStart(2, '0');
+        callTime.textContent = `${m}:${s}`;
+      }, 1000);
     }
 
-    async function startCamera() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-        videoUser.srcObject = stream;
-      } catch (err) {
-        alert('Erro ao acessar a câmera: ' + err.message);
-        throw err;
-      }
+    function declineCall() {
+      ringtone.pause();
+      incomingCall.innerHTML = '<h2 style="text-align:center;">A chamada foi encerrada</h2>';
+      localStorage.setItem('callEnded', 'true');
     }
 
-    function updateCallTime() {
-      seconds++;
-      const m = String(Math.floor(seconds / 60)).padStart(2, '0');
-      const s = String(seconds % 60).padStart(2, '0');
-      callTimeElem.textContent = `${m}:${s}`;
-    }
-
-    async function endCall() {
+    function endCall() {
       if (callEnded) return;
       callEnded = true;
-
-      localStorage.setItem('callEnded', 'true');
-
-      mainVideo.pause();
-      callAudio.pause();
-      mainVideo.loop = false;
-
-      if (videoUser.srcObject) {
-        videoUser.srcObject.getTracks().forEach(track => track.stop());
-      }
-
-      callEndedMessage.textContent = "A chamada foi encerrada.";
-      callEndedMessage.classList.add('show');
-
       clearInterval(callInterval);
-
-      try {
-        await endCallAudio.play();
-      } catch (e) {
-        console.warn('Não foi possível reproduzir o áudio de encerramento:', e);
+      mainVideo.pause();
+      endCallAudio.play();
+      if (userCam.srcObject) {
+        userCam.srcObject.getTracks().forEach(track => track.stop());
       }
-
-      mainVideo.style.display = 'none';
-      videoUser.style.display = 'none';
-      endCallButton.style.display = 'none';
-      document.querySelector('.user-info').style.display = 'none';
-      callTimeElem.textContent = '00:00';
+      callEndedMessage.style.display = 'block';
+      localStorage.setItem('callEnded', 'true');
     }
 
     function endCallManually() {
       endCall();
-      alert('Chamada encerrada');
+      alert('A chamada foi encerrada');
     }
 
-    function showCallEndedMessage() {
-      callEndedMessage.textContent = "A chamada foi encerrada anteriormente.\nPor favor, não reinicie a chamada.";
-      callEndedMessage.classList.add('show');
-    }
-
-    function disableCall() {
-      mainVideo.style.display = 'none';
-      videoUser.style.display = 'none';
-      endCallButton.style.display = 'none';
-      document.querySelector('.user-info').style.display = 'none';
-      callTimeElem.textContent = '00:00';
-    }
-
-    mainVideo.onplay = () => {
-      if (!callEnded) {
-        callAudio.play().catch(() => {});
-      }
-    };
-
-    mainVideo.onpause = () => {
-      callAudio.pause();
-    };
-
-    mainVideo.onended = () => {
-      endCall();
-    };
+    mainVideo.onended = endCall;
   </script>
 </body>
 </html>
