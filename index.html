@@ -83,8 +83,9 @@
     </button>
   </div>
 
+  <!-- TOQUE DA CHAMADA -->
   <audio id="ringtone" autoplay loop>
-    <source src="https://lucas27ff.github.io/chamada-de-video/veri.mp3" type="audio/mpeg">
+    <source src="toque.mp3" type="audio/mpeg">
     Seu navegador não suporta áudio.
   </audio>
 
@@ -104,7 +105,7 @@
     window.addEventListener('load', () => {
       const ringtone = document.getElementById("ringtone");
       ringtone.play().catch(() => {
-        // Em alguns navegadores, autoplay precisa de interação
+        // Autoplay bloqueado - requer interação
         document.body.addEventListener('click', () => {
           ringtone.play();
         }, { once: true });
