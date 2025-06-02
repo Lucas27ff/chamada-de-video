@@ -1,89 +1,113 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <title>Chamada recebida</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Chamada de Juliana</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    html, body {
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
       margin: 0;
       padding: 0;
       height: 100%;
-      background-color: black;
+      background-color: #000;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      height: 100vh;
+      background: radial-gradient(circle at center, #333 0%, #000 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-family: sans-serif;
-      overflow: hidden;
-    }
-    .profile-pic {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      border: 4px solid white;
-      object-fit: cover;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.4); }
-      70% { box-shadow: 0 0 0 20px rgba(0, 255, 0, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
-    }
-    h2 {
+      position: relative;
+      text-align: center;
       color: white;
-      margin: 25px 0 10px;
-      font-size: 22px;
+    }
+    .avatar {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid white;
+      box-shadow: 0 0 25px rgba(255,255,255,0.2);
+      margin-bottom: 20px;
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    p {
+      font-size: 16px;
+      margin-top: 8px;
+      color: #ccc;
     }
     .buttons {
+      margin-top: 30px;
       display: flex;
       gap: 30px;
-      margin-top: 20px;
     }
     .btn {
       width: 70px;
       height: 70px;
       border-radius: 50%;
-      border: none;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      border: none;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
       transition: transform 0.2s ease;
     }
-    .btn:active {
-      transform: scale(0.95);
+    .btn:hover {
+      transform: scale(1.05);
     }
-    .btn-green {
+    .accept {
       background-color: #4CAF50;
     }
-    .btn-red {
-      background-color: #D32F2F;
+    .decline {
+      background-color: #d32f2f;
     }
     .btn svg {
-      width: 28px;
-      height: 28px;
       fill: white;
+      width: 30px;
+      height: 30px;
     }
   </style>
 </head>
 <body>
 
-  <img class="profile-pic" src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Foto da Juliana">
+  <div class="container">
+    <div class="avatar">
+      <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Juliana">
+    </div>
+    <h1>Juliana</h1>
+    <p>Chamada de vídeo recebida...</p>
 
-  <h2>Juliana está te chamando...</h2>
+    <div class="buttons">
+      <button class="btn decline" onclick="recusarChamada()">
+        <svg viewBox="0 0 24 24">
+          <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/>
+        </svg>
+      </button>
 
-  <div class="buttons">
-    <button class="btn btn-red" onclick="recusarChamada()" title="Recusar">
-      <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/></svg>
-    </button>
-    <button class="btn btn-green" onclick="atenderChamada()" title="Atender">
-      <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/></svg>
-    </button>
+      <button class="btn accept" onclick="atenderChamada()">
+        <svg viewBox="0 0 24 24">
+          <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/>
+        </svg>
+      </button>
+    </div>
   </div>
 
-  <!-- TOQUE DA CHAMADA -->
+  <!-- Áudio do toque da chamada -->
   <audio id="ringtone" autoplay loop>
     <source src="toque.mp3" type="audio/mpeg">
     Seu navegador não suporta áudio.
@@ -91,26 +115,25 @@
 
   <script>
     function atenderChamada() {
+      // Parar o som
       document.getElementById("ringtone").pause();
+      // Redirecionar para a página da chamada
       window.location.href = "chamada.html";
     }
 
     function recusarChamada() {
-      const ringtone = document.getElementById("ringtone");
-      ringtone.pause();
-      alert("Chamada recusada");
+      document.getElementById("ringtone").pause();
+      alert("Chamada recusada.");
     }
 
-    // Garantir autoplay em alguns navegadores
-    window.addEventListener('load', () => {
+    // Garante que o áudio vai tocar mesmo com restrição de autoplay
+    document.addEventListener("click", () => {
       const ringtone = document.getElementById("ringtone");
-      ringtone.play().catch(() => {
-        // Autoplay bloqueado - requer interação
-        document.body.addEventListener('click', () => {
-          ringtone.play();
-        }, { once: true });
-      });
+      if (ringtone.paused) {
+        ringtone.play().catch(() => {});
+      }
     });
   </script>
+
 </body>
 </html>
