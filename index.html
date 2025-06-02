@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chamada de Juliana</title>
   <style>
     body {
@@ -10,17 +10,12 @@
       padding: 0;
       background: #000;
       font-family: Arial, sans-serif;
-      overflow: hidden;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
       color: white;
-      flex-direction: column;
-    }
-
-    .chamada-container {
-      text-align: center;
     }
 
     .imagem-circular {
@@ -29,8 +24,8 @@
       border-radius: 50%;
       overflow: hidden;
       border: 5px solid #25d366;
-      margin: 0 auto 20px;
       animation: pulse 1.5s infinite;
+      margin-bottom: 20px;
     }
 
     .imagem-circular img {
@@ -40,15 +35,14 @@
     }
 
     h2 {
+      margin: 0 0 30px 0;
       font-size: 1.5rem;
-      margin-bottom: 10px;
     }
 
     .botoes {
       display: flex;
       justify-content: center;
       gap: 40px;
-      margin-top: 30px;
     }
 
     button {
@@ -57,11 +51,11 @@
       border-radius: 50%;
       border: none;
       cursor: pointer;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
       display: flex;
-      justify-content: center;
       align-items: center;
-      animation: tremer 0.3s infinite;
+      justify-content: center;
+      animation: shake 0.4s infinite;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
     }
 
     .atender {
@@ -84,7 +78,7 @@
       100% { transform: scale(1); }
     }
 
-    @keyframes tremer {
+    @keyframes shake {
       0% { transform: translate(0, 0); }
       25% { transform: translate(1px, -1px); }
       50% { transform: translate(-1px, 1px); }
@@ -94,33 +88,35 @@
   </style>
 </head>
 <body>
-  <div class="chamada-container">
-    <div class="imagem-circular">
-      <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Juliana">
-    </div>
-    <h2>Juliana está te ligando...</h2>
-    <div class="botoes">
-      <button class="recusar" onclick="recusarChamada()">
-        <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/></svg>
-      </button>
-      <button class="atender" onclick="atenderChamada()">
-        <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/></svg>
-      </button>
-    </div>
+
+  <div class="imagem-circular">
+    <img src="https://mentoradosdowl.wordpress.com/wp-content/uploads/2025/05/valescagalega-20250523-0001.jpg" alt="Juliana">
   </div>
 
+  <h2>Juliana está te ligando...</h2>
+
+  <div class="botoes">
+    <button class="recusar" onclick="recusarChamada()">
+      <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/></svg>
+    </button>
+
+    <button class="atender" onclick="atenderChamada()">
+      <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21 11.72 11.72 0 003.68.59 1 1 0 011 1V20a1 1 0 01-1 1A17.91 17.91 0 013 6a1 1 0 011-1h3.5a1 1 0 011 1 11.72 11.72 0 00.59 3.68 1 1 0 01-.21 1.11l-2.26 2z"/></svg>
+    </button>
+  </div>
+
+  <!-- Som da chamada -->
   <audio id="audioToque" autoplay loop>
     <source src="https://cdn.pixabay.com/audio/2022/10/28/audio_5787287a90.mp3" type="audio/mpeg">
     Seu navegador não suporta áudio.
   </audio>
 
   <script>
-    const toque = document.getElementById('audioToque');
+    const toque = document.getElementById("audioToque");
 
-    // Reproduz o toque automaticamente após carregamento
     window.addEventListener('load', () => {
       toque.play().catch(() => {
-        // Caso bloqueado pelo navegador, tenta novamente após interação
+        // Autoplay bloqueado, tentar após interação
         document.body.addEventListener('click', () => toque.play(), { once: true });
       });
     });
@@ -135,5 +131,6 @@
       alert("Chamada recusada.");
     }
   </script>
+
 </body>
 </html>
